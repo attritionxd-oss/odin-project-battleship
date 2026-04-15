@@ -1,0 +1,26 @@
+{
+  "name": "odin-project-battleship",
+  "version": "1.0.0",
+  "description": "This repository is a solution to the project outlined in [The Odin Project > Project: Battleship](https://www.theodinproject.com/lessons/node-path-javascript-battleship).",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "watch": "jest --watch *.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/attritionxd-oss/odin-project-battleship.git"
+  },
+  "keywords": [],
+  "author": "attritionxd-oss",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/attritionxd-oss/odin-project-battleship/issues"
+  },
+  "homepage": "https://github.com/attritionxd-oss/odin-project-battleship#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.29.2",
+    "jest": "^30.3.0"
+  }
+}
