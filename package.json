@@ -2,10 +2,14 @@
   "name": "odin-project-battleship",
   "version": "1.0.0",
   "description": "This repository is a solution to the project outlined in [The Odin Project > Project: Battleship](https://www.theodinproject.com/lessons/node-path-javascript-battleship).",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "test",
-    "watch": "jest --watch *.js"
+    "test": "jest",
+    "watch": "jest --watch *.js",
+    "lint": "eslint ./",
+    "start": "webpack serve --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "server": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +25,20 @@
   "homepage": "https://github.com/attritionxd-oss/odin-project-battleship#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.29.2",
-    "jest": "^30.3.0"
+    "@eslint/js": "^10.0.1",
+    "css-loader": "^7.1.4",
+    "css-minimizer-webpack-plugin": "^8.0.0",
+    "eslint": "^10.2.0",
+    "favicons-webpack-plugin": "^6.0.1",
+    "globals": "^17.5.0",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.6",
+    "jest": "^30.3.0",
+    "mini-css-extract-plugin": "^2.10.2",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.106.2",
+    "webpack-cli": "^7.0.2",
+    "webpack-dev-server": "^5.2.3",
+    "webpack-merge": "^6.0.1"
   }
 }

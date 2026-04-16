@@ -1,0 +1,37 @@
+:root {
+  --color-white-fff: #fff;
+  --color-mono-eee: #eee;
+  --color-mono-ddd: #ddd;
+  --color-mono-ccc: #ccc;
+  --color-mono-000: #000;
+  --color-mono-100: #111;
+  --color-mono-190: #191919;
+  --color-mono-200: #222;
+  --color-mono-300: #333;
+  --color-mono-400: #444;
+  --color-mono-600: #666;
+  --color-mono-800: #888;
+  --color-yellow-200: goldenrod;
+  --color-blue-100: cornflowerblue;
+  --color-purple-100: #bd9dff;
+  --color-purple-900: #391f40;
+  --color-electric-mint: #afffd7;
+  --color-soft-lavender: #e2ccff;
+  --color-sky-glow: #aeefff;
+  --color-peach-punch: #ffd1ba;
+  --color-lemon-fizz: #fff5ad;
+  --color-rose-petal: #ffb7ce;
+  --color-cyber-lime: #d4ff91;
+  --color-icy-periwinkle: #c2d1ff;
+  --color-vivid-apricot: #ffc09f;
+  --color-arctic-teal: #98fffb;
+  --color-alert-red: #da6666;
+  /* --font-monospace-default:
+    ui-monospace, SFMono-Regular, "Cascadia Mono", "Roboto Mono",
+    "DejaVu Sans Mono", "Liberation Mono", Menlo, Monaco, "Consolas",
+    "Source Code Pro", monospace; */
+  font-size: 62.5%;
+  --font-size: 1.6rem;
+  --checkbox-transition: all 0.4s;
+  --header-height: 6rem;
+}
