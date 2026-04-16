@@ -1,7 +1,8 @@
 // specifies files from triggering a test run
 export default {
   watchPathIgnorePatterns: [
-    "<rootDir>/src/sandbox/sandbox*.js",
+    "<rootDir>/sandbox/sandbox.js",
+    "<rootDir>/sandbox/sandbox*.js",
     "<rootDir>/build/*.js",
     "<rootDir>*.sandbox.js",
     ".*\\.mjs$",
