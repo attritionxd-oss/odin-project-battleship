@@ -1,0 +1,202 @@
+import Gameboard from "/src/model/Gameboard";
+
+describe("Gameboard", () => {
+  test("modulee exists and returns an object", () => {
+    expect(() => new Gameboard()).toBeInstanceOf(Object);
+  });
+
+  test.each([["receiveAttack"], ["positionShip"], ["nLiveShips"]])(
+    "board.%s is a function",
+    (fn) => {
+      const board = new Gameboard("Carrier");
+      expect(board[fn]).toBeInstanceOf(Function);
+    },
+  );
+
+  describe("constructor creates board and ships", () => {
+    test.each([
+      [undefined, 7, 5],
+      [5, 5, 5],
+    ])(
+      "new Gameboard(%i) sets board with size %i and %i ships",
+      (size, boardSize, nShips) => {
+        const board = new Gameboard(size);
+
+        expect(board.getBoard().length).toBe(boardSize);
+
+        expect(board.getBoard()).toEqual(
+          expect.arrayContaining(
+            Array.from({ length: boardSize }, () => Array(boardSize)),
+          ),
+        );
+
+        expect(board.tracker.length).toBe(boardSize);
+
+        expect(board.tracker).toEqual(
+          expect.arrayContaining(
+            Array.from({ length: boardSize }, () => Array(boardSize)),
+          ),
+        );
+
+        expect(board.ships.length).toBe(nShips);
+
+        expect(board.ships[0].isSet).toBe(false);
+      },
+    );
+  });
+
+  describe("positionShip()", () => {
+    describe("successful ship positioning", () => {
+      test.each([
+        [0, "n", 5, 5],
+        [4, "w", 3, 3],
+        [3, "n", 6, 6],
+      ])(
+        "positionShip(%i, %s, [%i, %i]) successfull",
+        (shipId, direction, x, y) => {
+          const board = new Gameboard();
+          board.positionShip(shipId, direction, [x, y]);
+          expect(board.ships[shipId].posX[0]).toBe(x);
+          expect(board.ships[shipId].posY[0]).toBe(y);
+          expect(board.getBoard()[x][y]).toBe(shipId);
+        },
+      );
+    });
+
+    describe("erroneous arg handling", () => {
+      describe("missing args fails and logs", () => {
+        test.each([
+          [undefined, "n", 0, 0],
+          [5, "n", 0, 0],
+          [1, "a", 0, 0],
+        ])(
+          "positionShip(%i, %s, [%i, %i] incorrect arg handling",
+          (shipId, direction, x, y) => {
+            const board = new Gameboard();
+            const consoleSpy = jest
+              .spyOn(console, "error")
+              .mockImplementation(() => {});
+            expect(
+              board.positionShip(shipId, direction, [x, y]),
+            ).toBeUndefined();
+            expect(consoleSpy).toHaveBeenCalled();
+          },
+        );
+      });
+
+      test.each([
+        [0, "s", 5, 5],
+        [4, "e", 6, 6],
+        [3, "n", 0, 0],
+      ])("positionShip(%i, %s, [%i, %i]) fails", (shipId, direction, x, y) => {
+        const board = new Gameboard();
+        const consoleSpy = jest
+          .spyOn(console, "error")
+          .mockImplementation(() => {});
+        board.positionShip(shipId, direction, [x, y]);
+        expect(consoleSpy).toHaveBeenCalled();
+        expect(board.ships[shipId].posX[0]).toBeUndefined();
+        expect(board.ships[shipId].posY[0]).toBeUndefined();
+        expect(board.getBoard()[x][y]).toBeUndefined();
+      });
+    });
+  });
+
+  describe("receiveAttack()", () => {
+    test.each([
+      [0, "n", 5, 5, "[5, 4]"],
+      [4, "w", 3, 3, "[3, 3]"],
+      [3, "n", 6, 6, "[6, 6]"],
+    ])(
+      "positionShip(%i, %s, [%i, %i]) successfull hit on %p",
+      (shipId, direction, x, y, atkCoords) => {
+        const board = new Gameboard();
+        board.positionShip(shipId, direction, [x, y]);
+        board.receiveAttack(JSON.parse(atkCoords));
+
+        expect(board.getBoard()[x][y]).toBe(shipId);
+
+        expect(board.ships[shipId].damage).toBe(1);
+
+        expect(board.tracker).toEqual(
+          expect.arrayContaining(Array.from({ length: 7 }, () => Array(7))),
+        );
+      },
+    );
+
+    test.each([
+      [0, "n", 4, 5, "[5, 4]"],
+      [4, "w", 3, 2, "[3, 3]"],
+      [3, "n", 6, 3, "[6, 6]"],
+    ])(
+      "positionShip(%i, %s, [%i, %i]) to miss on %p",
+      (shipId, direction, x, y, atkCoords) => {
+        const board = new Gameboard();
+        board.positionShip(shipId, direction, [x, y]);
+        board.receiveAttack(JSON.parse(atkCoords));
+
+        expect(board.getBoard()[x][y]).toBe(shipId);
+
+        expect(board.ships[shipId].damage).toBe(0);
+
+        const [trackX, trackY] = JSON.parse(atkCoords);
+        expect(board.tracker[trackX][trackY]).toBe(true);
+      },
+    );
+  });
+
+  describe("nLiveShips() and allShipsLive()", () => {
+    const board = new Gameboard();
+    test("all ships live", () => {
+      expect(board.nLiveShips()).toBe(5);
+      expect(board.allShipsSunk()).toBe(false);
+    });
+    test("4 ships remain", () => {
+      board.positionShip(4, "e", [0, 0]);
+      board.receiveAttack([0, 0]);
+      board.receiveAttack([1, 0]);
+      expect(board.nLiveShips()).toBe(4);
+      expect(board.allShipsSunk()).toBe(false);
+    });
+
+    test("0 ships remain", () => {
+      board.positionShip(3, "e", [0, 0]);
+      board.receiveAttack([0, 0]);
+      board.receiveAttack([1, 0]);
+      board.receiveAttack([2, 0]);
+      expect(board.nLiveShips()).toBe(3);
+
+      board.positionShip(2, "e", [0, 0]);
+      board.receiveAttack([0, 0]);
+      board.receiveAttack([1, 0]);
+      board.receiveAttack([2, 0]);
+      board.receiveAttack([3, 0]);
+      expect(board.nLiveShips()).toBe(2);
+
+      board.positionShip(1, "e", [0, 0]);
+      board.receiveAttack([0, 0]);
+      board.receiveAttack([1, 0]);
+      board.receiveAttack([2, 0]);
+      board.receiveAttack([3, 0]);
+      board.receiveAttack([4, 0]);
+      expect(board.ships.map((ship) => ship.isSunk())).toEqual(
+        JSON.parse("[false,true,true,true,true]"),
+      );
+      expect(board.nLiveShips()).toBe(1);
+
+      board.positionShip(0, "e", [0, 0]);
+      board.receiveAttack([0, 0]);
+      board.receiveAttack([1, 0]);
+      board.receiveAttack([2, 0]);
+      board.receiveAttack([3, 0]);
+      board.receiveAttack([4, 0]);
+      board.receiveAttack([5, 0]);
+      expect(board.nLiveShips()).toBe(0);
+
+      expect(board.allShipsSunk()).toBe(true);
+      expect(board.ships.map((ship) => ship.isSunk())).toEqual(
+        JSON.parse("[true,true,true,true,true]"),
+      );
+    });
+  });
+});
