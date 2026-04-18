@@ -61,15 +61,15 @@ export default class Gameboard {
     const ship = this.#ships[id];
     if (!ship) {
       console.error("Arg: `id` not found");
-      return;
+      return false;
     }
     if (!["n", "e", "w", "s"].includes(direction)) {
       console.error("Arg: `direction` invalid");
-      return;
+      return false;
     }
     if (posX < 0 || posX > this.#size || posY < 0 || posY > this.#size) {
       console.error("Arg: `posX`, `posY` invalid");
-      return;
+      return false;
     }
     const shipLen = ship.size;
     const offset = direction === "n" || direction === "w" ? -1 : 1;
@@ -95,7 +95,7 @@ export default class Gameboard {
 
     if (isOutOfBounds) {
       console.error("Position out-of-bounds: Placement aborted.");
-      return;
+      return false;
     }
 
     plannedCoords.forEach((coord) => {
@@ -104,6 +104,7 @@ export default class Gameboard {
       ship.isSet = true;
       this.#updateBoard([coord.x, coord.y], id);
     });
+    return true;
   }
 
   receiveAttack([posX, posY]) {

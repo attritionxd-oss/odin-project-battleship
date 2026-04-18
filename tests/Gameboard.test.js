@@ -55,7 +55,7 @@ describe("Gameboard", () => {
         "positionShip(%i, %s, [%i, %i]) successfull",
         (shipId, direction, x, y) => {
           const board = new Gameboard();
-          board.positionShip(shipId, direction, [x, y]);
+          expect(board.positionShip(shipId, direction, [x, y])).toBe(true);
           expect(board.ships[shipId].posX[0]).toBe(x);
           expect(board.ships[shipId].posY[0]).toBe(y);
           expect(board.getBoard()[x][y]).toBe(shipId);
@@ -77,9 +77,7 @@ describe("Gameboard", () => {
             const consoleSpy = jest
               .spyOn(console, "error")
               .mockImplementation(() => {});
-            expect(
-              board.positionShip(shipId, direction, [x, y]),
-            ).toBeUndefined();
+            expect(board.positionShip(shipId, direction, [x, y])).toBe(false);
             expect(consoleSpy).toHaveBeenCalled();
           },
         );
@@ -94,7 +92,7 @@ describe("Gameboard", () => {
         const consoleSpy = jest
           .spyOn(console, "error")
           .mockImplementation(() => {});
-        board.positionShip(shipId, direction, [x, y]);
+        expect(board.positionShip(shipId, direction, [x, y])).toBe(false);
         expect(consoleSpy).toHaveBeenCalled();
         expect(board.ships[shipId].posX[0]).toBeUndefined();
         expect(board.ships[shipId].posY[0]).toBeUndefined();
