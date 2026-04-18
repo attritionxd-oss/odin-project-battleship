@@ -98,11 +98,6 @@ export default class Gameboard {
       return;
     }
 
-    // for (let i = 0; i < shipLen; i++) {
-    //   this.#ships[id].posX.push(posX + i * xStep);
-    //   this.#ships[id].posY.push(posY + i * yStep);
-    //   this.#updateBoard([posX + i * xStep, posY + i * yStep], id);
-    // }
     plannedCoords.forEach((coord) => {
       ship.posX.push(coord.x);
       ship.posY.push(coord.y);
