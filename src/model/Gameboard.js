@@ -114,6 +114,17 @@ export default class Gameboard {
     }
   }
 
+  nPositionedShips() {
+    const ships = this.#ships
+      .map((ship) => ship.posX.length !== 0 && ship.posY.length !== 0)
+      .filter((isPositioned) => isPositioned);
+    return ships.length;
+  }
+
+  allShipsPositioned() {
+    return this.nPositionedShips() === this.#N_SHIPS;
+  }
+
   nLiveShips() {
     const liveShips = this.#ships
       .map((ship) => !ship.isSunk())

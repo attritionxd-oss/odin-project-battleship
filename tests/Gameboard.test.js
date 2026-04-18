@@ -145,6 +145,27 @@ describe("Gameboard", () => {
     );
   });
 
+  describe("nPositionedShips() and allShipsPositioned()", () => {
+    const board = new Gameboard();
+    test("0 positioned ships", () => {
+      expect(board.nPositionedShips()).toBe(0);
+      expect(board.allShipsPositioned()).toBe(false);
+    });
+    test("1 positioned ship", () => {
+      board.positionShip(0, "s", [0, 0]);
+      expect(board.nPositionedShips()).toBe(1);
+      expect(board.allShipsPositioned()).toBe(false);
+    });
+    test("5 positioned ships", () => {
+      board.positionShip(1, "s", [1, 0]);
+      board.positionShip(2, "s", [2, 0]);
+      board.positionShip(3, "s", [3, 0]);
+      board.positionShip(4, "s", [4, 0]);
+      expect(board.nPositionedShips()).toBe(5);
+      expect(board.allShipsPositioned()).toBe(true);
+    });
+  });
+
   describe("nLiveShips() and allShipsLive()", () => {
     const board = new Gameboard();
     test("all ships live", () => {
