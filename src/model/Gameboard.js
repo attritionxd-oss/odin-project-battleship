@@ -101,6 +101,7 @@ export default class Gameboard {
     plannedCoords.forEach((coord) => {
       ship.posX.push(coord.x);
       ship.posY.push(coord.y);
+      ship.isSet = true;
       this.#updateBoard([coord.x, coord.y], id);
     });
   }

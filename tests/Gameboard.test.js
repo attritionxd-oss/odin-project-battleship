@@ -59,6 +59,7 @@ describe("Gameboard", () => {
           expect(board.ships[shipId].posX[0]).toBe(x);
           expect(board.ships[shipId].posY[0]).toBe(y);
           expect(board.getBoard()[x][y]).toBe(shipId);
+          expect(board.ships[shipId].isSet).toBe(true);
         },
       );
     });
