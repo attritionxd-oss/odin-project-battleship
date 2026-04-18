@@ -67,7 +67,7 @@ export default class Gameboard {
       console.error("Arg: `direction` invalid");
       return false;
     }
-    if (posX < 0 || posX > this.#size || posY < 0 || posY > this.#size) {
+    if (posX < 0 || posX >= this.#size || posY < 0 || posY >= this.#size) {
       console.error("Arg: `posX`, `posY` invalid");
       return false;
     }
