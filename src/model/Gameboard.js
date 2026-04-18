@@ -8,12 +8,12 @@ export default class Gameboard {
   #ships;
   constructor(size = 7) {
     this.#setSize(size);
-    this.#setBoard(size);
-    this.#setTracker(size);
-    this.#ships = this.#setShips();
+    this.#initBoard(size);
+    this.#initTracker(size);
+    this.#ships = this.#initShips();
   }
 
-  #setShips() {
+  #initShips() {
     const ships = [];
     for (let i = 0; i < this.#N_SHIPS; i++) {
       ships.push(new Ship(i));
@@ -29,7 +29,7 @@ export default class Gameboard {
     return this.#board;
   }
 
-  #setBoard(size) {
+  #initBoard(size) {
     this.#board = this.#createBoard(size);
   }
 
@@ -41,7 +41,7 @@ export default class Gameboard {
     return this.#tracker;
   }
 
-  #setTracker(size) {
+  #initTracker(size) {
     this.#tracker = this.#createBoard(size);
   }
 
