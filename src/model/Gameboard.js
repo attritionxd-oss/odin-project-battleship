@@ -108,8 +108,9 @@ export default class Gameboard {
   receiveAttack([posX, posY]) {
     const shipId = this.getBoard()[posX][posY];
     const ship = this.#ships[shipId];
-    if (!ship) return;
+    if (!ship) return false;
     ship.hit();
+    return true;
   }
 
   nPositionedShips() {
