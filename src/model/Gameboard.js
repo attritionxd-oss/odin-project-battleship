@@ -106,10 +106,10 @@ export default class Gameboard {
   }
 
   receiveAttack([posX, posY]) {
-    const id = this.getBoard()[posX][posY];
-    if (id !== undefined) {
-      this.#ships[id].hit();
-    }
+    const shipId = this.getBoard()[posX][posY];
+    const ship = this.#ships[shipId];
+    if (!ship) return;
+    ship.hit();
   }
 
   nPositionedShips() {
