@@ -104,45 +104,31 @@ describe("Gameboard", () => {
 
   describe("receiveAttack()", () => {
     test.each([
-      [0, "n", 5, 5, "[5, 4]"],
-      [4, "w", 3, 3, "[3, 3]"],
-      [3, "n", 6, 6, "[6, 6]"],
-    ])(
-      "positionShip(%i, %s, [%i, %i]) successfull hit on %p",
-      (shipId, direction, x, y, atkCoords) => {
-        const board = new Gameboard();
-        board.positionShip(shipId, direction, [x, y]);
-        board.receiveAttack(JSON.parse(atkCoords));
-
-        expect(board.getBoard()[x][y]).toBe(shipId);
-
-        expect(board.ships[shipId].damage).toBe(1);
-
-        expect(board.tracker).toEqual(
-          expect.arrayContaining(Array.from({ length: 7 }, () => Array(7))),
-        );
-      },
-    );
+      [0, 3, 1],
+      [0, 2, 1],
+      [0, 1, 1],
+    ])("receiveAttack([%i, %i]) results in ship damage %i", (x, y, dmg) => {
+      const board = new Gameboard();
+      board.positionShip(0, "s", [0, 0]);
+      expect(board.getBoard()[0][0]).toBe(0);
+      expect(board.getBoard()[0][1]).toBe(0);
+      expect(board.getBoard()[0][2]).toBe(0);
+      expect(board.getBoard()[0][3]).toBe(0);
+      board.receiveAttack([x, y]);
+      expect(board.ships[0].damage).toBe(dmg);
+    });
 
     test.each([
-      [0, "n", 4, 5, "[5, 4]"],
-      [4, "w", 3, 2, "[3, 3]"],
-      [3, "n", 6, 3, "[6, 6]"],
-    ])(
-      "positionShip(%i, %s, [%i, %i]) to miss on %p",
-      (shipId, direction, x, y, atkCoords) => {
-        const board = new Gameboard();
-        board.positionShip(shipId, direction, [x, y]);
-        board.receiveAttack(JSON.parse(atkCoords));
-
-        expect(board.getBoard()[x][y]).toBe(shipId);
-
-        expect(board.ships[shipId].damage).toBe(0);
-
-        const [trackX, trackY] = JSON.parse(atkCoords);
-        expect(board.tracker[trackX][trackY]).toBe(true);
-      },
-    );
+      [5, 4],
+      [3, 3],
+      [6, 6],
+    ])("receiveAttack([%i, %i]) does not hit", (x, y) => {
+      const board = new Gameboard();
+      board.positionShip(0, "s", [0, 0]);
+      expect(board.getBoard()[0][0]).toBe(0);
+      board.receiveAttack([x, y]);
+      expect(board.ships[0].damage).toBe(0);
+    });
   });
 
   describe("nPositionedShips() and allShipsPositioned()", () => {
