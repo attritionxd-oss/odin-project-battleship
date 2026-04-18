@@ -98,6 +98,15 @@ export default class Gameboard {
       return false;
     }
 
+    const isOverlapping = plannedCoords.some(
+      (coord) => this.#board[coord.x][coord.y] !== undefined,
+    );
+
+    if (isOverlapping) {
+      console.error("Overlap detected: Placement aborted.");
+      return false;
+    }
+
     plannedCoords.forEach((coord) => {
       ship.posX.push(coord.x);
       ship.posY.push(coord.y);

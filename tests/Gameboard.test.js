@@ -51,6 +51,7 @@ describe("Gameboard", () => {
         [0, "n", 5, 5],
         [4, "w", 3, 3],
         [3, "n", 6, 6],
+        [0, "n", 6, 6],
       ])(
         "positionShip(%i, %s, [%i, %i]) successfull",
         (shipId, direction, x, y) => {
@@ -166,37 +167,37 @@ describe("Gameboard", () => {
     });
 
     test("0 ships remain", () => {
-      board.positionShip(3, "e", [0, 0]);
-      board.receiveAttack([0, 0]);
-      board.receiveAttack([1, 0]);
-      board.receiveAttack([2, 0]);
+      board.positionShip(3, "e", [0, 1]);
+      board.receiveAttack([0, 1]);
+      board.receiveAttack([1, 1]);
+      board.receiveAttack([2, 1]);
       expect(board.nLiveShips()).toBe(3);
 
-      board.positionShip(2, "e", [0, 0]);
-      board.receiveAttack([0, 0]);
-      board.receiveAttack([1, 0]);
-      board.receiveAttack([2, 0]);
-      board.receiveAttack([3, 0]);
+      board.positionShip(2, "e", [0, 2]);
+      board.receiveAttack([0, 2]);
+      board.receiveAttack([1, 2]);
+      board.receiveAttack([2, 2]);
+      board.receiveAttack([3, 2]);
       expect(board.nLiveShips()).toBe(2);
 
-      board.positionShip(1, "e", [0, 0]);
-      board.receiveAttack([0, 0]);
-      board.receiveAttack([1, 0]);
-      board.receiveAttack([2, 0]);
-      board.receiveAttack([3, 0]);
-      board.receiveAttack([4, 0]);
+      board.positionShip(1, "e", [0, 3]);
+      board.receiveAttack([0, 3]);
+      board.receiveAttack([1, 3]);
+      board.receiveAttack([2, 3]);
+      board.receiveAttack([3, 3]);
+      board.receiveAttack([4, 3]);
       expect(board.ships.map((ship) => ship.isSunk())).toEqual(
         JSON.parse("[false,true,true,true,true]"),
       );
       expect(board.nLiveShips()).toBe(1);
 
-      board.positionShip(0, "e", [0, 0]);
-      board.receiveAttack([0, 0]);
-      board.receiveAttack([1, 0]);
-      board.receiveAttack([2, 0]);
-      board.receiveAttack([3, 0]);
-      board.receiveAttack([4, 0]);
-      board.receiveAttack([5, 0]);
+      board.positionShip(0, "e", [0, 4]);
+      board.receiveAttack([0, 4]);
+      board.receiveAttack([1, 4]);
+      board.receiveAttack([2, 4]);
+      board.receiveAttack([3, 4]);
+      board.receiveAttack([4, 4]);
+      board.receiveAttack([5, 4]);
       expect(board.nLiveShips()).toBe(0);
 
       expect(board.allShipsSunk()).toBe(true);
