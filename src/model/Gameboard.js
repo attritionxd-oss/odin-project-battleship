@@ -109,8 +109,6 @@ export default class Gameboard {
     const id = this.getBoard()[posX][posY];
     if (id !== undefined) {
       this.#ships[id].hit();
-    } else {
-      this.#tracker[posX][posY] = true;
     }
   }
 
