@@ -94,7 +94,6 @@ export default class Gameboard {
     );
 
     if (isOutOfBounds) {
-      console.error("Position out-of-bounds: Placement aborted.");
       return false;
     }
 
@@ -103,7 +102,6 @@ export default class Gameboard {
     );
 
     if (isOverlapping) {
-      console.error("Overlap detected: Placement aborted.");
       return false;
     }
 

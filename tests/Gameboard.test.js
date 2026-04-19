@@ -90,11 +90,7 @@ describe("Gameboard", () => {
         [3, "n", 0, 0],
       ])("positionShip(%i, %s, [%i, %i]) fails", (shipId, direction, x, y) => {
         const board = new Gameboard();
-        const consoleSpy = jest
-          .spyOn(console, "error")
-          .mockImplementation(() => {});
         expect(board.positionShip(shipId, direction, [x, y])).toBe(false);
-        expect(consoleSpy).toHaveBeenCalled();
         expect(board.ships[shipId].posX[0]).toBeUndefined();
         expect(board.ships[shipId].posY[0]).toBeUndefined();
         expect(board.getBoard()[y][x]).toBeUndefined();
