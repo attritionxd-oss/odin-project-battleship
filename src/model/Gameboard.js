@@ -34,7 +34,7 @@ export default class Gameboard {
   }
 
   #updateBoard([x, y], id) {
-    this.#board[x][y] = id;
+    this.#board[y][x] = id;
   }
 
   get tracker() {
@@ -99,7 +99,7 @@ export default class Gameboard {
     }
 
     const isOverlapping = plannedCoords.some(
-      (coord) => this.#board[coord.x][coord.y] !== undefined,
+      (coord) => this.#board[coord.y][coord.x] !== undefined,
     );
 
     if (isOverlapping) {
@@ -117,7 +117,7 @@ export default class Gameboard {
   }
 
   receiveAttack([posX, posY]) {
-    const shipId = this.getBoard()[posX][posY];
+    const shipId = this.getBoard()[posY][posX];
     const ship = this.#ships[shipId];
     if (!ship) return false;
     ship.hit();

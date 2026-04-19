@@ -59,7 +59,7 @@ describe("Gameboard", () => {
           expect(board.positionShip(shipId, direction, [x, y])).toBe(true);
           expect(board.ships[shipId].posX[0]).toBe(x);
           expect(board.ships[shipId].posY[0]).toBe(y);
-          expect(board.getBoard()[x][y]).toBe(shipId);
+          expect(board.getBoard()[y][x]).toBe(shipId);
           expect(board.ships[shipId].isSet).toBe(true);
         },
       );
@@ -97,7 +97,7 @@ describe("Gameboard", () => {
         expect(consoleSpy).toHaveBeenCalled();
         expect(board.ships[shipId].posX[0]).toBeUndefined();
         expect(board.ships[shipId].posY[0]).toBeUndefined();
-        expect(board.getBoard()[x][y]).toBeUndefined();
+        expect(board.getBoard()[y][x]).toBeUndefined();
       });
     });
   });
@@ -111,9 +111,9 @@ describe("Gameboard", () => {
       const board = new Gameboard();
       board.positionShip(0, "s", [0, 0]);
       expect(board.getBoard()[0][0]).toBe(0);
-      expect(board.getBoard()[0][1]).toBe(0);
-      expect(board.getBoard()[0][2]).toBe(0);
-      expect(board.getBoard()[0][3]).toBe(0);
+      expect(board.getBoard()[1][0]).toBe(0);
+      expect(board.getBoard()[2][0]).toBe(0);
+      expect(board.getBoard()[3][0]).toBe(0);
       board.receiveAttack([x, y]);
       expect(board.ships[0].damage).toBe(dmg);
     });
