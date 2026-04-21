@@ -27,8 +27,18 @@ export default class GameEngine {
         ? new HumanPlayer(p2.id, p2.color, p2.size)
         : new AIPlayer(p2.id, p2.color, p2.size);
 
-    this.gameState["p1"] = { id: "p1", name: setupData.p1.name, data: p1data };
-    this.gameState["p2"] = { id: "p2", name: setupData.p2.name, data: p2data };
+    this.gameState["p1"] = {
+      id: "p1",
+      name: setupData.p1.name,
+      playerType: setupData.p1.type,
+      data: p1data,
+    };
+    this.gameState["p2"] = {
+      id: "p2",
+      name: setupData.p2.name,
+      playerType: setupData.p2.type,
+      data: p2data,
+    };
   }
 
   initGame() {
@@ -38,9 +48,9 @@ export default class GameEngine {
       const playerType = this.setupData[player].type;
       if (playerType === "ai") {
         this.aiPlayerInit(player);
-        this.gameState.matchType.push(playerType);
         console.debug(`init ${player}:`, this.gameState[player].data.isReady());
       }
+      this.gameState.matchType.push(playerType);
     }
     this.gameState.currentTurn = "p1";
     this.gameState.gameReady = true;
