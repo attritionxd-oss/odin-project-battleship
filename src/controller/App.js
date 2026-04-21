@@ -161,25 +161,8 @@ export default class App {
 
   renderBoard(/* playerId, board, tracker */) {}
 
-  gameRunner() {
-    this.engine.initGame();
-    this.engine.startGame();
-    this.matchType = this.engine.gameState.matchType.join("-");
-
-    if (this.matchType === "ai-ai") {
-      this.aiGameRunner();
-    }
-  }
-
-  aiBoardRender() {
-    const oldBoard = document.querySelector(".gameboard-ai-ai");
-    if (oldBoard) oldBoard.remove();
-
-    const gameboardContainer = document.createElement("div");
-    gameboardContainer.classList.add("gameboard-ai-ai");
-
-    const renderGrid = (data, type, opponentTracker) => {
-      return `
+  #renderGrid(data, type, opponentTracker) {
+    return `
         <table class="game-grid game-grid--${type}">
           ${data
             .map(
@@ -217,16 +200,33 @@ export default class App {
             .join("")}
         </table>
       `;
-    };
+  }
+
+  gameRunner() {
+    this.engine.initGame();
+    this.engine.startGame();
+    this.matchType = this.engine.gameState.matchType.join("-");
+
+    if (this.matchType === "ai-ai") {
+      this.aiGameRunner();
+    }
+  }
+
+  aiBoardRender() {
+    const oldBoard = document.querySelector(".gameboard-ai-ai");
+    if (oldBoard) oldBoard.remove();
+
+    const gameboardContainer = document.createElement("div");
+    gameboardContainer.classList.add("gameboard-ai-ai");
 
     const tracker1 = this.engine.getPlayerTracker("p1");
     const tracker2 = this.engine.getPlayerTracker("p2");
-    const p1BoardHtml = renderGrid(
+    const p1BoardHtml = this.#renderGrid(
       this.engine.getPlayerBoard("p1"),
       "board",
       tracker2,
     );
-    const p2BoardHtml = renderGrid(
+    const p2BoardHtml = this.#renderGrid(
       this.engine.getPlayerBoard("p2"),
       "board",
       tracker1,
@@ -237,7 +237,7 @@ export default class App {
         <h2>${this.engine.gameState.p1.name}</h2>
         <div class="grids-wrapper">
           <div class="grid-container"><span>Board</span>${p1BoardHtml}</div>
-          <div class="grid-container"><span>Tracker</span>${renderGrid(this.engine.getPlayerTracker("p1"), "tracker")}</div>
+          <div class="grid-container"><span>Tracker</span>${this.#renderGrid(this.engine.getPlayerTracker("p1"), "tracker")}</div>
         </div>
       </div>
 
@@ -245,7 +245,7 @@ export default class App {
         <h2>${this.engine.gameState.p2.name}</h2>
         <div class="grids-wrapper">
           <div class="grid-container"><span>Board</span>${p2BoardHtml}</div>
-          <div class="grid-container"><span>Tracker</span>${renderGrid(this.engine.getPlayerTracker("p2"), "tracker")}</div>
+          <div class="grid-container"><span>Tracker</span>${this.#renderGrid(this.engine.getPlayerTracker("p2"), "tracker")}</div>
         </div>
       </div>
     `;
