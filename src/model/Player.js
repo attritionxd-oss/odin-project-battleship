@@ -50,6 +50,11 @@ export default class Player {
     return this.#board;
   }
 
+  reset() {
+    this._getBoard().resetBoard();
+    this.#setReadyState(false);
+  }
+
   isReady() {
     const board = this._getBoard();
     if (board.allShipsPositioned()) {
