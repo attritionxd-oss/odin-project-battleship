@@ -10,6 +10,8 @@ export default class App {
     this.renderGameSetupModal();
     this.gameSetupModalDefaultOptions();
     this.engine = gameEngine;
+    this.selectedShipId = null;
+    this.selectedDir = null;
   }
 
   renderLayout() {
@@ -337,6 +339,11 @@ export default class App {
     const board = this.engine.getPlayerBoard(playerId);
     const ships = this.engine.gameState[playerId].data._getBoard().ships;
 
+    if (this.selectedShipId === null || ships[this.selectedShipId].isSet) {
+      const nextShip = ships.find((s) => !s.isSet);
+      this.selectedShipId = nextShip ? ships.indexOf(nextShip) : null;
+    }
+
     let modal = document.querySelector(".boardsetup-modal--interactive");
     if (!modal) {
       modal = document.createElement("div");
@@ -381,7 +388,7 @@ export default class App {
           ${shipList
             .map(
               (ship, idx) => `
-            <button class="ship-select-btn ${ship.isSet ? "hidden" : ""}" data-id="${idx}">
+            <button class="ship-select-btn ${ship.isSet ? "hidden" : ""} ${this.selectedShipId === idx ? "active" : ""}" data-id="${idx}">
               ${ship.className} (${ship.size})
             </button>
           `,
@@ -393,7 +400,7 @@ export default class App {
           ${["n", "e", "w", "s"]
             .map(
               (dir) => `
-            <button class="dir-btn" data-dir="${dir}">${dir.toUpperCase()}</button>
+            <button class="dir-btn ${this.selectedDir === dir ? "active" : ""}" data-dir="${dir}">${dir.toUpperCase()}</button>
           `,
             )
             .join("")}
@@ -428,46 +435,37 @@ export default class App {
   }
 
   attachSetupEventListeners(playerId) {
-    let selectedShipId = null;
-    let selectedDir = "e";
-
     const modal = document.querySelector(".boardsetup-modal--interactive");
 
     modal.querySelectorAll(".ship-select-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        selectedShipId = parseInt(btn.dataset.id);
-        modal
-          .querySelectorAll(".ship-select-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+        this.selectedShipId = parseInt(btn.dataset.id);
+        this.renderShipSetup(playerId);
       });
     });
 
     modal.querySelectorAll(".dir-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        selectedDir = btn.dataset.dir;
-        modal
-          .querySelectorAll(".dir-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+        this.selectedDir = btn.dataset.dir;
+        this.renderShipSetup(playerId);
       });
     });
 
     modal.querySelector(".setup-board").addEventListener("click", (e) => {
       const cell = e.target.closest(".setup-cell");
-      if (!cell || selectedShipId === null) return;
+      if (!cell || this.selectedShipId === null || this.selectedDir === null)
+        return;
 
       const x = parseInt(cell.dataset.x);
       const y = parseInt(cell.dataset.y);
 
       const success = this.engine.gameState[playerId].data.setShip(
-        selectedShipId,
-        selectedDir,
+        this.selectedShipId,
+        this.selectedDir,
         [x, y],
       );
 
       if (success) {
-        selectedShipId = null;
         this.renderShipSetup(playerId);
       } else {
         alert("Invalid Placement! Out of bounds or overlapping.");
