@@ -133,7 +133,7 @@ export default class App {
       };
       this.toggleVisibility(this.gameSetup);
       this.engine.setup(setupData);
-      this.gameRunner();
+      this.initPreGamePhase();
     });
   }
 
@@ -200,13 +200,30 @@ export default class App {
       `;
   }
 
-  gameRunner() {
+  initPreGamePhase() {
     this.engine.initGame();
+
+    const p1 = this.engine.gameState.p1;
+    const p2 = this.engine.gameState.p2;
+
+    // console.log(p1);
+    if (p1.playerType === "human" && !p1.data.isReady()) {
+      this.renderShipSetup("p1");
+    } else if (p2.playerType === "human" && !p2.data.isReady()) {
+      this.renderShipSetup("p2");
+    } else {
+      this.proceedToBattle();
+    }
+  }
+
+  proceedToBattle() {
     this.engine.startGame();
     this.matchType = this.engine.gameState.matchType.join("-");
 
     if (this.matchType === "ai-ai") {
       this.aiGameRunner();
+    } else {
+      this.activeGameRunner();
     }
   }
 
@@ -260,6 +277,8 @@ export default class App {
     this.toggleVisibility(gameboardContainer, true);
   }
 
+  activeGameRunner() {}
+
   aiGameRunner() {
     const gameInterval = setInterval(() => {
       const currentId = this.engine.gameState.currentTurn;
@@ -286,5 +305,152 @@ export default class App {
 
       this.engine.gameState.currentTurn = opponentId;
     }, 300);
+  }
+
+  renderShipSetup(playerId) {
+    const board = this.engine.getPlayerBoard(playerId);
+    const ships = this.engine.gameState[playerId].data._getBoard().ships;
+
+    let modal = document.querySelector(".boardsetup-modal--interactive");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.classList.add("boardsetup-modal", "boardsetup-modal--interactive");
+      this.main.appendChild(modal);
+    }
+    modal.innerHTML = "";
+
+    const setupContainer = document.createElement("div");
+    setupContainer.classList.add("setup-container");
+
+    const renderInteractiveBoard = (data) => {
+      return `
+        <table class="setup-board">
+          ${data
+            .map(
+              (row, y) => `
+            <tr>
+              ${row
+                .map(
+                  (cell, x) => `
+                <td class="setup-cell ${cell !== undefined ? "placed" : ""}" 
+                    data-x="${x}" data-y="${y}">
+                  ${cell !== undefined ? "S" : "&nbsp;"}
+                </td>
+              `,
+                )
+                .join("")}
+            </tr>
+          `,
+            )
+            .join("")}
+        </table>
+      `;
+    };
+
+    const renderShipControls = (shipList) => {
+      return `
+      <div class="setup-controls">
+        <h3>Select Ship</h3>
+        <div class="ship-buttons">
+          ${shipList
+            .map(
+              (ship, idx) => `
+            <button class="ship-select-btn ${ship.isSet ? "hidden" : ""}" data-id="${idx}">
+              ${ship.className} (${ship.size})
+            </button>
+          `,
+            )
+            .join("")}
+        </div>
+        <h3>Orientation</h3>
+        <div class="direction-buttons">
+          ${["n", "e", "w", "s"]
+            .map(
+              (dir) => `
+            <button class="dir-btn" data-dir="${dir}">${dir.toUpperCase()}</button>
+          `,
+            )
+            .join("")}
+        </div>
+        <div class="control-buttons">
+          <button class="ready-btn disabled">Ready</button>
+          <button class="reset-btn">Reset</button>
+        </div>
+      </div>
+    `;
+    };
+
+    setupContainer.innerHTML = `
+      <div class="setup-board-wrapper">
+        ${renderInteractiveBoard(board)}
+      </div>
+      ${renderShipControls(ships)}
+    `;
+
+    modal.appendChild(setupContainer);
+    this.attachSetupEventListeners(playerId);
+
+    const isPlayerReady = this.engine.gameState[playerId].data.isReady();
+    const readyBtn = modal.querySelector(".ready-btn");
+
+    if (isPlayerReady) {
+      readyBtn.classList.remove("disabled");
+      readyBtn.addEventListener("click", () => {
+        this.handleSetupCompletion(playerId);
+      });
+    }
+  }
+
+  attachSetupEventListeners(playerId) {
+    let selectedShipId = null;
+    let selectedDir = "e";
+
+    const modal = document.querySelector(".boardsetup-modal--interactive");
+
+    modal.querySelectorAll(".ship-select-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedShipId = parseInt(btn.dataset.id);
+        modal
+          .querySelectorAll(".ship-select-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+
+    modal.querySelectorAll(".dir-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedDir = btn.dataset.dir;
+        modal
+          .querySelectorAll(".dir-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+
+    modal.querySelector(".setup-board").addEventListener("click", (e) => {
+      const cell = e.target.closest(".setup-cell");
+      if (!cell || selectedShipId === null) return;
+
+      const x = parseInt(cell.dataset.x);
+      const y = parseInt(cell.dataset.y);
+
+      const success = this.engine.gameState[playerId].data.setShip(
+        selectedShipId,
+        selectedDir,
+        [x, y],
+      );
+
+      if (success) {
+        selectedShipId = null;
+        this.renderShipSetup(playerId);
+      } else {
+        alert("Invalid Placement! Out of bounds or overlapping.");
+      }
+    });
+
+    modal.querySelector(".reset-btn").addEventListener("click", () => {
+      this.engine.gameState[playerId].data.reset(); // Wipe the data
+      this.renderShipSetup(playerId); // Wipe the view
+    });
   }
 }

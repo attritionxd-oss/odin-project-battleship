@@ -1,0 +1,92 @@
+.boardsetup-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: var(--color-mono-200);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px #b3b3b333;
+}
+
+.setup-container {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+/* board styles */
+.setup-board {
+  border-collapse: collapse;
+  cursor: crosshair;
+}
+
+.setup-cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.setup-cell:hover:not(.placed) {
+  background-color: var(--color-mono-600);
+}
+
+.setup-cell.placed {
+  background-color: var(--color-purple-100);
+  color: white;
+}
+
+/* control styles */
+.setup-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 30ch;
+}
+
+.ship-buttons,
+.direction-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.control-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ship-select-btn,
+.dir-btn,
+.reset-btn,
+.ready-btn {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--color-mono-600);
+  color: var(--color-mono-ddd);
+  cursor: pointer;
+  border: none;
+}
+
+.ship-select-btn.active,
+.dir-btn.active {
+  background: var(--color-purple-100);
+  color: var(--color-mono-200);
+}
+
+.reset-btn {
+  background-color: var(--color-rose-petal);
+  color: var(--color-alert-red);
+}
+
+.ready-btn.disabled {
+  background-color: var(--color-mono-300);
+  color: var(--color-mono-600);
+  cursor: not-allowed;
+}
+
+.ship-select-btn.hidden {
+  display: none;
+}
