@@ -22,7 +22,7 @@ export default class Gameboard {
   }
 
   #createBoard(size) {
-    return Array.from({ length: size }, () => Array(size));
+    return Array.from({ length: size }, () => Array(size).fill(undefined));
   }
 
   getBoard() {
