@@ -229,13 +229,21 @@ export default class App {
       "board",
       tracker1,
     );
+    const p1TrackerHtml = this.#renderGrid(
+      this.engine.getPlayerTracker("p1"),
+      "tracker",
+    );
+    const p2TrackerHtml = this.#renderGrid(
+      this.engine.getPlayerTracker("p2"),
+      "tracker",
+    );
 
     gameboardContainer.innerHTML = `
       <div class="player-column p1-column">
         <h2>${this.engine.gameState.p1.name}</h2>
         <div class="grids-wrapper">
           <div class="grid-container"><span>Board</span>${p1BoardHtml}</div>
-          <div class="grid-container"><span>Tracker</span>${this.#renderGrid(this.engine.getPlayerTracker("p1"), "tracker")}</div>
+          <div class="grid-container"><span>Tracker</span>${p1TrackerHtml}</div>
         </div>
       </div>
 
@@ -243,7 +251,7 @@ export default class App {
         <h2>${this.engine.gameState.p2.name}</h2>
         <div class="grids-wrapper">
           <div class="grid-container"><span>Board</span>${p2BoardHtml}</div>
-          <div class="grid-container"><span>Tracker</span>${this.#renderGrid(this.engine.getPlayerTracker("p2"), "tracker")}</div>
+          <div class="grid-container"><span>Tracker</span>${p2TrackerHtml}</div>
         </div>
       </div>
     `;
