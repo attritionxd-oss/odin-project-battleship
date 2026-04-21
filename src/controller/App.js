@@ -159,8 +159,6 @@ export default class App {
     this.gameSetupStartBtnEventListener();
   }
 
-  renderBoard(/* playerId, board, tracker */) {}
-
   #renderGrid(data, type, opponentTracker) {
     return `
         <table class="game-grid game-grid--${type}">
