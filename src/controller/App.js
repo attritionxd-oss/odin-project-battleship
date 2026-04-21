@@ -178,15 +178,15 @@ export default class App {
     const gameboardContainer = document.createElement("div");
     gameboardContainer.classList.add("gameboard-ai-ai");
 
-    const renderGrid = (data, type) => {
+    const renderGrid = (data, type, opponentTracker) => {
       return `
         <table class="game-grid game-grid--${type}">
           ${data
             .map(
-              (row) => `
+              (row, y) => `
             <tr>
               ${row
-                .map((cell) => {
+                .map((cell, x) => {
                   let content = "&nbsp;";
                   let cellClass = "";
 
@@ -202,6 +202,10 @@ export default class App {
                   } else {
                     content = cell !== undefined ? `S${cell}` : "&nbsp;";
                     if (cell !== undefined) cellClass = "ship";
+
+                    if (opponentTracker && opponentTracker[y][x] === true) {
+                      cellClass += " hit";
+                    }
                   }
 
                   return `<td class="${cellClass}">${content}</td>`;
@@ -215,11 +219,24 @@ export default class App {
       `;
     };
 
+    const tracker1 = this.engine.getPlayerTracker("p1");
+    const tracker2 = this.engine.getPlayerTracker("p2");
+    const p1BoardHtml = renderGrid(
+      this.engine.getPlayerBoard("p1"),
+      "board",
+      tracker2,
+    );
+    const p2BoardHtml = renderGrid(
+      this.engine.getPlayerBoard("p2"),
+      "board",
+      tracker1,
+    );
+
     gameboardContainer.innerHTML = `
       <div class="player-column p1-column">
         <h2>${this.engine.gameState.p1.name}</h2>
         <div class="grids-wrapper">
-          <div class="grid-container"><span>Board</span>${renderGrid(this.engine.getPlayerBoard("p1"), "board")}</div>
+          <div class="grid-container"><span>Board</span>${p1BoardHtml}</div>
           <div class="grid-container"><span>Tracker</span>${renderGrid(this.engine.getPlayerTracker("p1"), "tracker")}</div>
         </div>
       </div>
@@ -227,7 +244,7 @@ export default class App {
       <div class="player-column p2-column">
         <h2>${this.engine.gameState.p2.name}</h2>
         <div class="grids-wrapper">
-          <div class="grid-container"><span>Board</span>${renderGrid(this.engine.getPlayerBoard("p2"), "board")}</div>
+          <div class="grid-container"><span>Board</span>${p2BoardHtml}</div>
           <div class="grid-container"><span>Tracker</span>${renderGrid(this.engine.getPlayerTracker("p2"), "tracker")}</div>
         </div>
       </div>

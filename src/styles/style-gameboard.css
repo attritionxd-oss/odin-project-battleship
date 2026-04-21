@@ -30,25 +30,33 @@
   font-family: monospace;
 }
 
-.hit {
+.game-grid td.ship.hit {
+  position: relative;
+  color: var(--color-mono-ccc);
+}
+
+.game-grid .hit :not(.ship) {
   background-color: var(--color-mono-300);
   color: var(--color-alert-red);
   font-weight: bold;
 }
-.miss {
+
+.game-grid .miss {
   background-color: var(--color-mono-200);
   color: var(--color-mono-800);
 }
-.ship {
+.game-grid .ship {
   background-color: var(--color-mono-300);
 }
-.ship .hit {
-  content: "x";
+
+.game-grid td.ship.hit::after {
+  content: "\00D7"; /* alternative "❌" */
   position: absolute;
-  top: 50%;
-  right: 2px;
-  transform: translate(-50%);
-  font-size: 1.2rem;
-  color: var(--color-alert-red);
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.6;
+  font-size: 4rem;
+  color: var(--color-alert-red, red);
   pointer-events: none;
 }
