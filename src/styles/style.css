@@ -1,0 +1,87 @@
+* {
+  box-sizing: border-box;
+  font-size: var(--font-size);
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: var(--color-mono-190);
+  color: var(--color-mono-ddd);
+}
+/* grid styles */
+#root {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--header-height) minmax(0, 1fr) 5rem;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+  min-height: 100vh;
+}
+
+header {
+  grid-area: header;
+}
+
+main {
+  grid-area: main;
+  overflow-y: auto;
+}
+
+footer {
+  grid-area: footer;
+}
+/* end grid styles */
+
+/* element styles */
+header {
+  background-color: var(--color-purple-900);
+  display: flex;
+}
+header .logo {
+  display: block;
+  background-image: url("../logo.png");
+  background-size: contain;
+  height: var(--header-height);
+  width: var(--header-height);
+}
+header > h1 {
+  align-self: center;
+  font-size: 2rem;
+  margin-left: 1rem;
+}
+
+header > nav#main-menu {
+  display: flex;
+  margin-left: auto;
+  margin-right: 1.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-purple-100);
+}
+
+footer {
+  align-content: center;
+  background-color: var(--color-mono-300);
+}
+
+footer > p {
+  display: flex;
+  justify-content: center;
+}
+/* end element styles */
+
+/* utility styles */
+.hidden {
+  visibility: hidden;
+  height: 0%;
+}
+.visible {
+  visibility: visible;
+  height: 100%;
+}

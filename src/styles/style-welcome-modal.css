@@ -1,0 +1,36 @@
+.welcome-modal {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-modal__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 3rem;
+  border-radius: 2rem;
+  background-color: var(--color-mono-300);
+}
+
+/* .welcome-modal__banner {} */
+
+.welcome-modal__start-wrapper {
+  display: block;
+}
+
+.welcome-modal__launch-setup-button {
+  background-color: var(--color-mono-600);
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--color-white-100);
+  padding: 0.8rem 2rem;
+  width: clamp(80px, 20%, 100px);
+}
+
+.welcome-modal__h1 {
+  font-size: 4rem;
+}
