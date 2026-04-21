@@ -206,11 +206,18 @@ export default class App {
     const p1 = this.engine.gameState.p1;
     const p2 = this.engine.gameState.p2;
 
-    // console.log(p1);
     if (p1.playerType === "human" && !p1.data.isReady()) {
-      this.renderShipSetup("p1");
+      this.renderSplashScreen(
+        `${p1.name}, place your ships`,
+        "Start Setup",
+        () => this.renderShipSetup("p1"),
+      );
     } else if (p2.playerType === "human" && !p2.data.isReady()) {
-      this.renderShipSetup("p2");
+      this.renderSplashScreen(
+        `${p2.name}, place your ships`,
+        "Start Setup",
+        () => this.renderShipSetup("p2"),
+      );
     } else {
       this.proceedToBattle();
     }
@@ -277,8 +284,6 @@ export default class App {
     this.toggleVisibility(gameboardContainer, true);
   }
 
-  activeGameRunner() {}
-
   aiGameRunner() {
     const gameInterval = setInterval(() => {
       const currentId = this.engine.gameState.currentTurn;
@@ -305,6 +310,27 @@ export default class App {
 
       this.engine.gameState.currentTurn = opponentId;
     }, 300);
+  }
+
+  renderSplashScreen(message, buttonText, onConfirm) {
+    const splash = document.createElement("div");
+    splash.classList.add("splash-screen"); // Add styles for centering/overlay
+
+    splash.innerHTML = `
+      <div class="splash-content">
+        <h1>${message}</h1>
+        <button class="splash-confirm-btn">${buttonText}</button>
+      </div>
+    `;
+
+    this.main.appendChild(splash);
+
+    splash
+      .querySelector(".splash-confirm-btn")
+      .addEventListener("click", () => {
+        splash.remove();
+        onConfirm();
+      });
   }
 
   renderShipSetup(playerId) {
@@ -452,5 +478,43 @@ export default class App {
       this.engine.gameState[playerId].data.reset(); // Wipe the data
       this.renderShipSetup(playerId); // Wipe the view
     });
+  }
+
+  handleSetupCompletion(playerId) {
+    const player = this.engine.gameState[playerId].data;
+
+    if (!player.isReady()) {
+      console.error("Attempted to finalize setup, unpositioned ships remain");
+      return;
+    }
+
+    const modal = document.querySelector(".boardsetup-modal");
+    if (modal) {
+      modal.remove();
+    }
+
+    const opponentId = playerId === "p1" ? "p2" : "p1";
+    const opponentEntry = this.engine.gameState[opponentId];
+    const opponentData = opponentEntry.data;
+    const opponentType = opponentEntry.playerType;
+    const opponentName = opponentEntry.name;
+
+    if (opponentType === "human" && !opponentData.isReady()) {
+      this.renderSplashScreen(
+        `Pass the device to ${opponentName}`,
+        "Start Setup",
+        () => this.renderShipSetup(opponentId),
+      );
+    } else {
+      this.renderSplashScreen(
+        "All fleets deployed. Prepare for battle!",
+        "Commence attack",
+        () => this.proceedToBattle(),
+      );
+    }
+  }
+
+  activeGameRunner() {
+    console.debug("activeGameRunner");
   }
 }
