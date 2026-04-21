@@ -29,7 +29,7 @@ describe("Player", () => {
   });
 
   describe("methods require subclass implementation", () => {
-    test.each([["setShip"], ["getMove"]])("player.%s is a function", (fn) => {
+    test.each([["getMove"]])("player.%s is a function", (fn) => {
       const player = new Player();
       expect(() => player[fn]()).toThrow(/must be implemented by subclass/);
     });

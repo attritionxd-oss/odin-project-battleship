@@ -5,9 +5,5 @@ export default class HumanPlayer extends Player {
     super(id, color, size);
   }
 
-  setShip(id, direction, [posX, posY]) {
-    this._getBoard().positionShip(id, direction, [posX, posY]);
-  }
-
   getMove() {}
 }

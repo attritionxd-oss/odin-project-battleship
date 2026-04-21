@@ -5,10 +5,6 @@ export default class AIPlayer extends Player {
     super(id, color, size);
   }
 
-  setShip(id, direction, [posX, posY]) {
-    return this._getBoard().positionShip(id, direction, [posX, posY]);
-  }
-
   setAllShips() {
     const board = this._getBoard();
     const ships = board.ships;

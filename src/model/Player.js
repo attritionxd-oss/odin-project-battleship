@@ -75,8 +75,8 @@ export default class Player {
     this._getBoard().tracker[y][x] = isHit;
   }
 
-  setShip() {
-    throw new Error("setShip() must be implemented by subclass");
+  setShip(id, direction, [posX, posY]) {
+    return this._getBoard().positionShip(id, direction, [posX, posY]);
   }
 
   getMove() {
