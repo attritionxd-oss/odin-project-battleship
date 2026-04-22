@@ -75,8 +75,3 @@ const GameSetupModal = {
 };
 
 export default GameSetupModal;
-//
-// gamesetup-modal__banner
-// gamesetup-modal__submit-wrapper
-// gamesetup-modal__submit-button
-// gamesetup-modal__h1

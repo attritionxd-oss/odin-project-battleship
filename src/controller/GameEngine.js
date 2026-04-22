@@ -48,7 +48,6 @@ export default class GameEngine {
       const playerType = this.setupData[player].type;
       if (playerType === "ai") {
         this.aiPlayerInit(player);
-        console.debug(`init ${player}:`, this.gameState[player].data.isReady());
       }
       this.gameState.matchType.push(playerType);
     }
@@ -70,10 +69,6 @@ export default class GameEngine {
 
   aiPlayerInit(playerId) {
     return this.gameState[playerId].data.setAllShips();
-  }
-
-  humanPlayerInit() {
-    // initialize human player ships
   }
 
   playerIsReady(playerId) {

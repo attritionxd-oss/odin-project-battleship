@@ -5,6 +5,7 @@ import "./styles/style-game-setup-modal.css";
 import "./styles/style-gameboard.css";
 import "./styles/style-board-setup-modal.css";
 import "./styles/style-splash-screen.css";
+import "./styles/style-active-game.css";
 
 import App from "./controller/App.js";
 import GameEngine from "./controller/GameEngine.js";

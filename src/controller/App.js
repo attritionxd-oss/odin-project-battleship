@@ -316,7 +316,7 @@ export default class App {
 
   renderSplashScreen(message, buttonText, onConfirm) {
     const splash = document.createElement("div");
-    splash.classList.add("splash-screen"); // Add styles for centering/overlay
+    splash.classList.add("splash-screen");
 
     splash.innerHTML = `
       <div class="splash-content">
@@ -473,8 +473,8 @@ export default class App {
     });
 
     modal.querySelector(".reset-btn").addEventListener("click", () => {
-      this.engine.gameState[playerId].data.reset(); // Wipe the data
-      this.renderShipSetup(playerId); // Wipe the view
+      this.engine.gameState[playerId].data.reset();
+      this.renderShipSetup(playerId);
     });
   }
 
@@ -513,6 +513,132 @@ export default class App {
   }
 
   activeGameRunner() {
-    console.debug("activeGameRunner");
+    this.renderBattleUI();
+  }
+
+  renderBattleUI() {
+    const currentId = this.engine.gameState.currentTurn;
+    const opponentId = currentId === "p1" ? "p2" : "p1";
+    const currentPlayerName = this.engine.gameState[currentId].name;
+
+    this.main.innerHTML = "";
+
+    const battleContainer = document.createElement("div");
+    battleContainer.classList.add("battle-container");
+
+    const trackerHtml = this.#renderGrid(
+      this.engine.getPlayerTracker(currentId),
+      "tracker",
+    );
+
+    const boardHtml = this.#renderGrid(
+      this.engine.getPlayerBoard(currentId),
+      "board",
+      this.engine.getPlayerTracker(opponentId),
+    );
+
+    battleContainer.innerHTML = `
+      <h2>${currentPlayerName}'s Turn</h2>
+      <div class="battle-layout">
+        <div class="tracker-section">
+          <h3>Target Map (Opponent)</h3>
+          <div class="attack-grid-wrapper">${trackerHtml}</div>
+        </div>
+        
+        <div class="board-section">
+          <h3>Defense Map (Your Fleet)</h3>
+          <button class="toggle-board-btn">Show My Board</button>
+          <div class="defense-grid-wrapper hidden">${boardHtml}</div>
+        </div>
+      </div>
+      <div class="action-area">
+        <button class="end-turn-btn hidden">End Turn</button>
+      </div>
+    `;
+
+    this.main.appendChild(battleContainer);
+    this.attachBattleEventListeners();
+  }
+
+  attachBattleEventListeners() {
+    const currentId = this.engine.gameState.currentTurn;
+    const opponentId = currentId === "p1" ? "p2" : "p1";
+
+    const toggleBtn = this.main.querySelector(".toggle-board-btn");
+    const boardWrapper = this.main.querySelector(".defense-grid-wrapper");
+    toggleBtn.addEventListener("click", () => {
+      const isHidden = boardWrapper.classList.toggle("hidden");
+      toggleBtn.textContent = isHidden ? "Show My Board" : "Hide My Board";
+    });
+
+    const trackerTable = this.main.querySelector(".game-grid--tracker");
+    trackerTable.addEventListener("click", (e) => {
+      const cell = e.target.closest("td");
+      if (
+        !cell ||
+        cell.classList.contains("hit") ||
+        cell.classList.contains("miss")
+      )
+        return;
+
+      const x = cell.cellIndex;
+      const y = cell.parentNode.rowIndex;
+
+      const isHit = this.engine.gameState[opponentId].data.receiveAttack([
+        x,
+        y,
+      ]);
+      this.engine.gameState[currentId].data.updateTracker([x, y], isHit);
+
+      this.renderBattleUI();
+
+      const endTurnBtn = this.main.querySelector(".end-turn-btn");
+      endTurnBtn.classList.remove("hidden");
+
+      trackerTable.style.pointerEvents = "none";
+    });
+
+    this.main.querySelector(".end-turn-btn").addEventListener("click", () => {
+      this.checkWinAndTransition(currentId, opponentId);
+    });
+  }
+
+  checkWinAndTransition(currentId, opponentId) {
+    if (this.engine.playerHasLost(opponentId)) {
+      this.renderSplashScreen(
+        `${this.engine.gameState[currentId].name} Wins!`,
+        "New Game",
+        () => location.reload(),
+      );
+      return;
+    }
+
+    this.engine.gameState.currentTurn = opponentId;
+    const nextPlayerEntry = this.engine.gameState[opponentId];
+
+    if (nextPlayerEntry.playerType === "ai") {
+      const [ax, ay] = this.engine.getPlayerMove(opponentId);
+      const wasAiHit = this.engine.gameState[currentId].data.receiveAttack([
+        ax,
+        ay,
+      ]);
+      this.engine.gameState[opponentId].data.updateTracker([ax, ay], wasAiHit);
+
+      const moveResult = wasAiHit ? "hit your ship!" : "missed.";
+      this.renderSplashScreen(
+        `AI ${moveResult} Your turn, ${this.engine.gameState[currentId].name}`,
+        "Continue",
+        () => {
+          this.engine.gameState.currentTurn = currentId;
+          this.renderBattleUI();
+        },
+      );
+    } else {
+      this.renderSplashScreen(
+        `Pass device to ${nextPlayerEntry.name}`,
+        "Start Turn",
+        () => this.renderBattleUI(),
+      );
+    }
   }
 }

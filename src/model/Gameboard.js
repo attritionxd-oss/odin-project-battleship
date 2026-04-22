@@ -30,8 +30,8 @@ export default class Gameboard {
   }
 
   resetBoard() {
-    this.#initBoard(this.size); // Wipes the matrix
-    this.#ships = this.#initShips(); // Recreates fresh, unpositioned ships
+    this.#initBoard(this.size);
+    this.#ships = this.#initShips();
   }
 
   #initBoard(size) {
